@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.slick-slider .slick-arrow {
+  @apply z-10 w-10 h-full;
+  @apply bg-black bg-opacity-20;
+  @apply hover:bg-black hover:bg-opacity-30;
+}
+
+.slick-slider .slick-arrow polyline {
+  @apply stroke-white;
+}
+
+.slick-slider .slick-prev {
+  @apply left-0;
+}
+
+.slick-slider .slick-next {
+  @apply right-0;
+}
+
+.lazy-load-image span {
+  @apply w-full;
+}
+
+.full-body {
+  @apply w-screen h-screen;
+}
+
+.center-flex {
+  @apply flex justify-center items-center;
+}
+
+.center-absolute {
+  @apply top-0 left-0 right-0 bottom-0 m-auto;
+}
+
+.center-crop {
+  @apply object-cover object-center;
+}
