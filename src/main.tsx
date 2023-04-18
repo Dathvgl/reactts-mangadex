@@ -3,8 +3,10 @@ import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutHome from "~/layouts/LayoutHome";
+import LayoutChapter from "~/layouts/LayoutChapter";
 
 import "./index.css";
+import "flag-icons/css/flag-icons.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -48,11 +50,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <Routes>
         <Route path="/" element={<LayoutHome />}>
           <Route index element={<HomePage />} />
-          <Route path="/detail/:id" element={<DetailPage />} />
-          <Route
-            path="/chapter/:mangaId/:lang/:chapterId"
-            element={<ChapterPage />}
-          />
+          <Route path="detail/:id" element={<DetailPage />} />
+          <Route path="chapter/:mangaId/:lang" element={<LayoutChapter />}>
+            <Route path=":chapterId/:chapter" element={<ChapterPage />} />
+          </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

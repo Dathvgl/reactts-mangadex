@@ -95,6 +95,9 @@ export type CoverMangadex = {
 export type ChaptersResponseMangadex = ResultMangadex & {
   response?: string;
   data?: ChapterMangadex[];
+  limit?: number;
+  offset?: number;
+  total?: number;
 };
 
 export type ChapterMangadex = {
@@ -119,4 +122,32 @@ export type ChapterMangadex = {
 
 export type ImageResponseMangadex = {
   data?: string[];
+};
+
+export type AggregateResponseMangadex = ResultMangadex & {
+  volumes?: AggregateMangadex;
+};
+
+export type AggregateMangadex = {
+  [key: string]: {
+    volume?: string;
+    count?: number;
+    chapters?: {
+      [key: string]: {
+        id?: string;
+        count?: number;
+        chapter?: string;
+        others?: string[];
+      };
+    };
+  };
+};
+
+export type AggregateChapterMangadex = {
+  [key: string]: {
+    id?: string;
+    count?: number;
+    chapter?: string;
+    others?: string[];
+  };
 };

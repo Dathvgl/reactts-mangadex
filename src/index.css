@@ -39,3 +39,8 @@
 .center-crop {
   @apply object-cover object-center;
 }
+
+.base-scrollbar {
+  @apply overflow-y-scroll scrollbar-thin scroll-smooth;
+  @apply scrollbar-thumb-emerald-100;
+}

@@ -14,11 +14,11 @@ type DataType = {
 function HomePage() {
   const [slider, setSlider] = useState<MangaMangadex[]>([]);
   const [news, setNews] = useState<MangaMangadex[]>([]);
-  
+
   useEffect(() => {
     init();
   }, []);
-  
+
   async function init() {
     const res = await axios.get(`${server}/api/mangadex/home`);
     if (res.status == 200) {

@@ -5,9 +5,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import useDebounce from "~/hooks/Debounce";
 import { useMangadexCover } from "~/hooks/Mangadex";
-import { cover, server, title } from "~/main";
+import { server, title } from "~/main";
 import {
-  CoverResponseMangadex,
   MangaMangadex,
   MangaResponseMangadex,
 } from "~/types";
@@ -76,7 +75,7 @@ function SearchLayoutHome() {
         </div>
         {state && (
           <>
-            <div className="absolute z-50 border border-black rounded-bl rounded-br divide-y-2 bg-white w-full h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-100 scroll-smooth">
+            <div className="absolute z-50 border border-black rounded-bl rounded-br divide-y-2 bg-white w-full h-80 base-scrollbar">
               {list.map((item, index) => (
                 <Fragment key={index}>
                   <SearchItem item={item} />

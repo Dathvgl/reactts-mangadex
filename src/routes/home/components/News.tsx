@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
+import ISO6391 from "~/components/ISO6391";
 import { useMangadexChapter, useMangadexCover } from "~/hooks/Mangadex";
 import { fromNow, title } from "~/main";
 import { MangaMangadex } from "~/types";
@@ -24,7 +25,7 @@ function NewsHome(props: { data: MangaMangadex[] }) {
               <NewItem item={item} />
             </Fragment>
           ))}
-          {/* <NewItem item={data[0]} /> */}
+          {/* <NewItem item={data[2]} /> */}
         </div>
       </div>
     </>
@@ -65,25 +66,35 @@ function NewItem(props: { item: MangaMangadex }) {
               {title(item.attributes?.title)}
             </Link>
             {chapters && (
-              <ul className="flex flex-col gap-2">
+              <ul className="flex flex-col  bg-green-500 bg-opacity-10 divide-y-2 divide-black rounded">
                 {chapters?.map((child, index) => (
                   <Fragment key={index}>
                     <li className="text-[13px] py-1 px-2 rounded hover:bg-black hover:bg-opacity-20 font-semibold flex flex-col justify-between items-center">
                       <div className="flex justify-between items-center w-full">
                         <Link
-                          to={`/chapter/${item?.id}/${child.attributes?.translatedLanguage}/${child.id}`}
+                          to={`/chapter/${item?.id}/${child.attributes?.translatedLanguage}/${child.id}/${child?.attributes?.chapter}`}
                           className="truncate hover:text-sky-600"
                         >
                           Chapter: {child?.attributes?.chapter}
                         </Link>
-                        <div>{child.attributes?.translatedLanguage}</div>
+                        <ISO6391 str={child.attributes?.translatedLanguage} />
                       </div>
-                      <div className="flex justify-between items-center w-full">
-                        Volume: {child.attributes?.volume}
-                        <i className="whitespace-nowrap text-[11px] text-gray-500">
-                          {fromNow(child?.attributes?.updatedAt)}
-                        </i>
-                      </div>
+                      {child.attributes?.volume ? (
+                        <>
+                          <div className="flex justify-between items-end w-full">
+                            Vl: {child.attributes?.volume}
+                            <i className="whitespace-nowrap text-[11px] text-gray-500">
+                              {fromNow(child?.attributes?.updatedAt)}
+                            </i>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <i className="text-end w-full whitespace-nowrap text-[11px] text-gray-500">
+                            {fromNow(child?.attributes?.updatedAt)}
+                          </i>
+                        </>
+                      )}
                     </li>
                   </Fragment>
                 ))}
