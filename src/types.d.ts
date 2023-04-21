@@ -1,13 +1,41 @@
 export type ResultMangadex = {
   result?: "ok" | "error";
+  response?: string;
+  limit?: number;
+  offset?: number;
+  total?: number;
 };
 
 export type MangaResponseMangadex = ResultMangadex & {
   response?: string;
   data?: MangaMangadex[];
+};
+
+export type MangaSearchMangadex = {
   limit?: number;
   offset?: number;
-  total?: number;
+  title?: string;
+  authorOrArtist?: string;
+  authors?: string[];
+  artists?: string[];
+  year?: number;
+  includedTags?: string[];
+  includedTagsMode?: string;
+  excludedTags?: string[];
+  excludedTagsMode?: string;
+  status?: string[];
+  originalLanguage?: string[];
+  excludedOriginalLanguage?: string[];
+  availableTranslatedLanguage?: string[];
+  publicationDemographic?: string[];
+  ids?: string[];
+  contentRating?: string[];
+  createdAtSince?: string;
+  updatedAtSince?: string;
+  // order:any;
+  includes?: string[];
+  hasAvailableChapters?: "0" | "1";
+  group?: string;
 };
 
 export type MangaMangadex = {
@@ -35,6 +63,10 @@ export type MangaMangadex = {
     updatedAt?: string;
   };
   relationships?: RelationshipMangadex[];
+};
+
+export type TagResponseMangadex = ResultMangadex & {
+  data?: TagMangadex[];
 };
 
 export type TagMangadex = {
@@ -95,9 +127,6 @@ export type CoverMangadex = {
 export type ChaptersResponseMangadex = ResultMangadex & {
   response?: string;
   data?: ChapterMangadex[];
-  limit?: number;
-  offset?: number;
-  total?: number;
 };
 
 export type ChapterMangadex = {

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import ISO6391 from "~/components/ISO6391";
-import { server } from "~/main";
+import { fromNow, server } from "~/main";
 import {
   ChapterMangadex,
   ChaptersResponseMangadex,
@@ -14,6 +14,8 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 function ItemDetail(props: { item: MangaMangadex }) {
   const { item } = props;
   const baseOffset = 50;
+
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -27,13 +29,13 @@ function ItemDetail(props: { item: MangaMangadex }) {
   async function init() {
     const res = await axios.get(
       `${server}/api/mangadex/mangaChapter/${item.id}`,
-      { params: { limit: 50, offset, sort } }
+      { params: { limit: baseOffset, offset, sort } }
     );
 
     if (res.status == 200) {
       const data: ChaptersResponseMangadex = res.data;
       if (data.result == "ok") {
-        setTotal(() => (data.total ?? 0) / baseOffset);
+        setTotal(() => Math.ceil((data.total ?? 0) / baseOffset));
         setState(() => data.data ?? []);
       }
     }
@@ -42,12 +44,19 @@ function ItemDetail(props: { item: MangaMangadex }) {
   function onPageChange(selectedItem: { selected: number }) {
     const { selected } = selectedItem;
     setOffset(() => selected * baseOffset);
+
+    if (ref.current) {
+      ref.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   }
 
   return (
     <>
-      <div className="mt-4 flex">
-        <div className="flex flex-col w-72">
+      <div className="mt-4 flex max-lg:flex-col max-lg:gap-4">
+        <div className="flex flex-col lg:w-72">
           <div className="font-bold mb-2">Demographic</div>
           <Link
             to="/"
@@ -57,16 +66,22 @@ function ItemDetail(props: { item: MangaMangadex }) {
           </Link>
           <br />
           <div className="font-bold">Alternative Titles</div>
-          {item.attributes?.altTitles?.map((item, index) => {
-            const key = Object.keys(item)[0];
-            return (
-              <Fragment key={index}>
-                <div className="flex gap-4">
-                  <ISO6391 str={key} /> {item[key]}
-                </div>
-              </Fragment>
-            );
-          })}
+          {item.attributes?.altTitles
+            ?.sort((a, b) => {
+              const aKey = Object.keys(a)[0];
+              const bKey = Object.keys(b)[0];
+              return aKey.localeCompare(bKey);
+            })
+            ?.map((item, index) => {
+              const key = Object.keys(item)[0];
+              return (
+                <Fragment key={index}>
+                  <div className="flex gap-4">
+                    <ISO6391 str={key} /> {item[key]}
+                  </div>
+                </Fragment>
+              );
+            })}
         </div>
         <div className="flex-1 flex flex-col">
           <div className="flex">
@@ -80,14 +95,14 @@ function ItemDetail(props: { item: MangaMangadex }) {
             </button>
           </div>
           <br />
-          <div className="flex flex-col gap-4 h-96 base-scrollbar">
+          <div ref={ref} className="flex flex-col gap-4 h-96 base-scrollbar">
             <ItemAll id={item.id} sort={sort} item={state} />
           </div>
           <br />
           <div className="flex justify-center">
             <ReactPaginate
               className="flex gap-4"
-              pageLinkClassName="flex items-center justify-center font-bold rounded border border-black w-8 h-8 hover:bg-black hover:bg-opacity-10"
+              pageLinkClassName="flex items-center justify-center px-2 font-bold rounded border border-black min-w-8 h-8 hover:bg-black hover:bg-opacity-10"
               activeLinkClassName="bg-orange-500"
               containerClassName="flex item-center justify-center"
               breakLinkClassName="flex items-center justify-center rounded w-8 h-8 hover:bg-black hover:bg-opacity-10"
@@ -109,7 +124,8 @@ function ItemDetail(props: { item: MangaMangadex }) {
 }
 
 type VolumeType = { [key: string]: VolumeChildType };
-type VolumeChildType = { [key: string]: { children: JSX.Element[] } };
+type VolumeItemType = { lang?: string; child: JSX.Element };
+type VolumeChildType = { [key: string]: { children: VolumeItemType[] } };
 
 function ItemAll(props: {
   id?: string;
@@ -123,16 +139,23 @@ function ItemAll(props: {
   item.forEach((item, index) => {
     const { attributes } = item;
     const child = (
-      <Link
-        to={`/chapter/${id}/${attributes?.translatedLanguage}/${item.id}/${attributes?.chapter}`}
-      >
-        <ISO6391 str={attributes?.translatedLanguage} />{" "}
-        {attributes?.title ? (
-          <>{attributes?.title}</>
-        ) : (
-          <>Ch. {attributes?.chapter}</>
-        )}
-      </Link>
+      <>
+        <div className="flex justify-between items-center">
+          <Link
+            to={`/chapter/${id}/${attributes?.translatedLanguage}/${item.id}/${attributes?.chapter}`}
+          >
+            <ISO6391 str={attributes?.translatedLanguage} />{" "}
+            {attributes?.title ? (
+              <>{attributes?.title}</>
+            ) : (
+              <>Ch. {attributes?.chapter}</>
+            )}
+          </Link>
+          <i className="whitespace-nowrap text-[11px] text-gray-500">
+            {fromNow(attributes?.updatedAt)}
+          </i>
+        </div>
+      </>
     );
 
     const volume = attributes?.volume ?? "none";
@@ -140,18 +163,21 @@ function ItemAll(props: {
 
     if (!volumes[volume]) {
       volumes[volume] = { [chapter]: { children: [] } };
-      volumes[volume][chapter].children.push(
-        <Fragment key={index}>{child}</Fragment>
-      );
+      volumes[volume][chapter].children.push({
+        lang: attributes?.translatedLanguage,
+        child: <Fragment key={index}>{child}</Fragment>,
+      });
     } else if (!volumes[volume][chapter]) {
       volumes[volume][chapter] = { children: [] };
-      volumes[volume][chapter].children.push(
-        <Fragment key={index}>{child}</Fragment>
-      );
+      volumes[volume][chapter].children.push({
+        lang: attributes?.translatedLanguage,
+        child: <Fragment key={index}>{child}</Fragment>,
+      });
     } else {
-      volumes[volume][chapter].children.push(
-        <Fragment key={index}>{child}</Fragment>
-      );
+      volumes[volume][chapter].children.push({
+        lang: attributes?.translatedLanguage,
+        child: <Fragment key={index}>{child}</Fragment>,
+      });
     }
   });
 
@@ -171,9 +197,13 @@ function ItemAll(props: {
                   <div className="p-2 bg-black bg-opacity-10">
                     <div className="font-bold">Chapter: {key}</div>
                     <div className="flex flex-col divide-y-2 divide-blue-200">
-                      {chapter.children.map((item, index) => (
-                        <Fragment key={index}>{item}</Fragment>
-                      ))}
+                      {chapter.children
+                        .sort(
+                          (a, b) => a.lang?.localeCompare(b.lang ?? "") ?? 0
+                        )
+                        .map((item, index) => (
+                          <Fragment key={index}>{item.child}</Fragment>
+                        ))}
                     </div>
                   </div>
                 </Fragment>

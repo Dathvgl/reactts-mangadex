@@ -1,8 +1,8 @@
 import { Fragment } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
+import CoverSrc from "~/components/CoverSrc";
 import ISO6391 from "~/components/ISO6391";
-import { useMangadexChapter, useMangadexCover } from "~/hooks/Mangadex";
+import { useMangadexChapter } from "~/hooks/Mangadex";
 import { fromNow, title } from "~/main";
 import { MangaMangadex } from "~/types";
 
@@ -25,7 +25,6 @@ function NewsHome(props: { data: MangaMangadex[] }) {
               <NewItem item={item} />
             </Fragment>
           ))}
-          {/* <NewItem item={data[2]} /> */}
         </div>
       </div>
     </>
@@ -34,30 +33,13 @@ function NewsHome(props: { data: MangaMangadex[] }) {
 
 function NewItem(props: { item: MangaMangadex }) {
   const { item } = props;
-
-  const image = useMangadexCover(item);
   const chapters = useMangadexChapter(item.id);
 
   return (
     <>
       <div className="max-md:flex max-md:justify-center">
-        <figure className="max-lg:w-fit">
-          <div className="relative">
-            <Link
-              to={`/detail/${item.id}`}
-              className="lazy-load-image w-full flex center-crop"
-            >
-              <LazyLoadImage
-                effect="blur"
-                className="rounded-lg w-full h-44"
-                src={image}
-                alt="Error"
-              />
-            </Link>
-            <div className="absolute text-gray-300 text-md p-1 w-full bg-black bg-opacity-50 bottom-0 rounded-bl-lg rounded-br-lg">
-              Haha
-            </div>
-          </div>
+        <figure className="w-full">
+          <CoverSrc item={item} link={`/detail/${item.id}`} />
           <figcaption>
             <Link
               to={`/detail/${item.id}`}

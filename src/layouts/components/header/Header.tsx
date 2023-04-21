@@ -1,5 +1,6 @@
-import SearchLayoutHome from "./Search";
+import SearchLayoutHome from "../Search";
 import { Link } from "react-router-dom";
+import HeaderSearch from "./components/Search";
 
 function HeaderLayoutHome() {
   return (
@@ -19,12 +20,14 @@ function HeaderLayoutHome() {
         </div>
       </div>
       <div className="bg-black sticky top-0 z-40">
-        <div className="container mx-auto">
+        <div className="container mx-auto relative">
           <ul className="text-white uppercase font-semibold flex divide-x-2 divide-gray-500">
             <Link to="/" className="hover:text-orange-500">
-              <li className="p-2">hot</li>
+              <li className="p-2">Hot</li>
             </Link>
-            <li className="p-2">Theo dõi</li>
+            <li className="p-2 group/tag">
+              <HeaderSearch />
+            </li>
           </ul>
         </div>
       </div>

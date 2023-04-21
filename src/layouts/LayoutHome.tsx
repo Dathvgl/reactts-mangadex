@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import HeaderLayoutHome from "./components/Header";
+import HeaderLayoutHome from "./components/header/Header";
 import FooterLayoutHome from "./components/Footer";
 
 function LayoutHome() {

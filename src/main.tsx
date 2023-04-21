@@ -14,10 +14,15 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 const HomePage = lazy(() => import("~/routes/home/Home"));
 const DetailPage = lazy(() => import("~/routes/detail/Detail"));
 const ChapterPage = lazy(() => import("~/routes/chapter/Chapter"));
+const SearchPage = lazy(() => import("~/routes/search/Search"));
 const ErrorPage = lazy(() => import("~/routes/Error"));
 
 // ABCDEFGHIJKLMNOPQRSTUVWXYZ
 export const server: string = import.meta.env.VITE_SERVER;
+
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 export const title = (obj?: { [key: string]: string }) => {
   if (obj) {
@@ -33,7 +38,7 @@ export const cover = (id: string, name: string) =>
 
 export function fromNow(str?: string) {
   const date = moment(str).fromNow();
-  return date.charAt(0).toUpperCase() + date.slice(1);
+  return capitalize(date);
 }
 
 function Loading() {
@@ -54,6 +59,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route path="chapter/:mangaId/:lang" element={<LayoutChapter />}>
             <Route path=":chapterId/:chapter" element={<ChapterPage />} />
           </Route>
+          <Route path="search" element={<SearchPage />} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

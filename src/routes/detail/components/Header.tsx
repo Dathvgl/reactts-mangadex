@@ -34,7 +34,11 @@ function HeaderDetail(props: { item: MangaMangadex }) {
       <div className="flex flex-wrap gap-4 font-semibold">
         {item.attributes?.tags?.map((item, index) => (
           <Fragment key={index}>
-            <Link to="/" className="px-2 py-1 rounded-lg text-xs bg-slate-200">
+            <Link
+              to="/search"
+              state={item}
+              className="px-2 py-1 rounded-lg text-xs bg-slate-200"
+            >
               {item.attributes?.name?.["en"] ?? ""}
             </Link>
           </Fragment>

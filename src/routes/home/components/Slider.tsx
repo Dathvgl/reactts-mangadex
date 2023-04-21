@@ -1,9 +1,8 @@
 import { Fragment } from "react";
-import { GrNext, GrPrevious } from "react-icons/gr";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import Slider, { Settings } from "react-slick";
-import { useMangadexCover } from "~/hooks/Mangadex";
+import CoverSrc from "~/components/CoverSrc";
+import { useMangadexChapter } from "~/hooks/Mangadex";
 import { fromNow, title } from "~/main";
 import { MangaMangadex } from "~/types";
 
@@ -70,31 +69,33 @@ function SliderHome(props: { data: MangaMangadex[] }) {
 
 function SliderItem(props: { item: MangaMangadex }) {
   const { item } = props;
-  const image = useMangadexCover(item);
+  const chapter = useMangadexChapter(item.id, 1)?.[0];
 
   return (
     <>
       <div className="p-2">
         <div className="relative w-fit">
-          <Link to="/" className="flex center-crop">
-            <LazyLoadImage
-              effect="blur"
-              className="rounded-lg w-44 h-48"
-              src={image}
-              alt="Error"
-            />
-          </Link>
+          <div className="w-36 lg:w-40 xl:w-44">
+            <CoverSrc item={item} link={`/detail/${item.id}`} />
+          </div>
           <div className="absolute text-white text-md p-1 w-full bg-black bg-opacity-70 bottom-0 rounded-bl-lg rounded-br-lg">
             <Link
-              to="/"
+              to={`/detail/${item.id}`}
               className="line-clamp-1 text-center font-semibold hover:text-sky-600"
             >
               {title(item.attributes?.title)}
             </Link>
             <div className="text-sm flex justify-between items-center gap-2">
-              <Link to="/" className="truncate hover:text-sky-600">
-                Chapter 100000
-              </Link>
+              {chapter && (
+                <>
+                  <Link
+                    to={`/chapter/${item?.id}/${chapter.attributes?.translatedLanguage}/${chapter.id}/${chapter?.attributes?.chapter}`}
+                    className="truncate hover:text-sky-600"
+                  >
+                    Chapter {chapter.attributes?.chapter}
+                  </Link>
+                </>
+              )}
               <i className="whitespace-nowrap text-xs ">
                 {fromNow(item.attributes?.updatedAt)}
               </i>

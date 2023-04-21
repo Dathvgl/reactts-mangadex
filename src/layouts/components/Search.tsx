@@ -1,15 +1,13 @@
 import axios from "axios";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
+import CoverSrc from "~/components/CoverSrc";
+import ISO6391 from "~/components/ISO6391";
 import useDebounce from "~/hooks/Debounce";
-import { useMangadexCover } from "~/hooks/Mangadex";
+import { useMangadexChapter } from "~/hooks/Mangadex";
 import { server, title } from "~/main";
-import {
-  MangaMangadex,
-  MangaResponseMangadex,
-} from "~/types";
+import { MangaMangadex, MangaResponseMangadex } from "~/types";
 
 function SearchLayoutHome() {
   const ref = useRef<HTMLInputElement | null>(null);
@@ -91,25 +89,36 @@ function SearchLayoutHome() {
 
 function SearchItem(props: { item: MangaMangadex }) {
   const { item } = props;
-  const image = useMangadexCover(item);
+  const chapter = useMangadexChapter(item.id, 1)?.[0];
 
   return (
     <>
       <Link
         className="flex gap-4 items-center p-2 hover:bg-black hover:bg-opacity-10"
-        to="/"
+        to={`/detail/${item.id}`}
       >
-        <LazyLoadImage
-          className="w-16 h-16 center-crop"
-          effect="blur"
-          src={image}
-          alt="Error"
-        />
+        <div className="w-16">
+          <CoverSrc
+            disableLink
+            altHeight="h-16"
+            item={item}
+            link={`/detail/${item.id}`}
+          />
+        </div>
         <div className="flex-1 flex flex-col truncate">
           <div className="truncate font-bold">
             {title(item?.attributes?.title)}
           </div>
-          <div className="truncate text-sm">Chapter ???</div>
+          {chapter && (
+            <>
+              <div className="flex items-center gap-2">
+                <ISO6391 str={chapter.attributes?.translatedLanguage} />
+                <div className="truncate text-sm">
+                  Chapter {chapter.attributes?.chapter}
+                </div>
+              </div>
+            </>
+          )}
           <div className="truncate text-sm">
             {item.attributes?.tags?.map((item, index, { length }) => (
               <Fragment key={index}>

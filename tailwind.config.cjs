@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    minWidth: {
+      8: "2rem",
+    },
     container: {
       padding: {
         DEFAULT: "1rem",
@@ -11,7 +14,11 @@ module.exports = {
         "2xl": "9rem",
       },
     },
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        "fit-40": "repeat(auto-fit, minmax(10rem, 1fr))",
+      },
+    },
   },
   plugins: [require("tailwind-scrollbar")],
 };

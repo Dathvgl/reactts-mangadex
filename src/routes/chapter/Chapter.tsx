@@ -2,24 +2,44 @@ import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useListVolume } from "~/layouts/LayoutChapter";
 import { server } from "~/main";
-import { AggregateChapterMangadex, ImageResponseMangadex } from "~/types";
+import { ImageResponseMangadex } from "~/types";
+import ChapterButton from "./components/Button";
 
 function ChapterPage() {
   const { mangaId, lang, chapterId, chapter } = useParams();
+  const navigate = useNavigate();
   const { list } = useListVolume();
-  const ref = useRef<HTMLSelectElement | null>(null);
+  const refTop = useRef<HTMLSelectElement | null>(null);
+  const refBot = useRef<HTMLSelectElement | null>(null);
   const [state, setState] = useState<string[]>([]);
+  const [keyCode, setKeyCode] = useState("");
+
+  useEffect(() => {
+    function handleKey(event: KeyboardEvent) {
+      if (event.key == "ArrowLeft") {
+        setKeyCode(() => event.key);
+      } else if (event.key == "ArrowRight") {
+        setKeyCode(() => event.key);
+      }
+    }
+
+    window.addEventListener("keyup", handleKey);
+    return () => {
+      window.removeEventListener("keyup", handleKey);
+    };
+  }, []);
 
   useEffect(() => {
     init();
   }, [chapterId]);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.value = chapter ?? "";
+    if (refTop.current && refBot.current) {
+      refTop.current.value = chapter ?? "";
+      refBot.current.value = chapter ?? "";
     }
   }, [chapter]);
 
@@ -29,6 +49,16 @@ function ChapterPage() {
       const data: ImageResponseMangadex = res.data;
       setState(() => data.data || []);
     }
+  }
+
+  function callback() {
+    setKeyCode(() => "");
+  }
+
+  function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const item = list[event.target.value];
+    navigate(`/chapter/${mangaId}/${lang}/${item.id}/${item.chapter}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (state.length == 0) {
@@ -43,23 +73,34 @@ function ChapterPage() {
             className="rounded-tl-lg  rounded-bl-lg"
             id={mangaId}
             lang={lang}
+            keyButton={keyCode}
+            callback={callback}
             altIndex={-1}
             chapter={chapter}
             list={list}
           >
             <GrFormPreviousLink size={25} />
           </ChapterButton>
-          <select ref={ref} defaultValue={chapter} className="w-20 border">
-            {Object.keys(list ?? {}).reverse().map((key, index) => (
-              <Fragment key={index}>
-                <option value={list[key].chapter}>{key}</option>
-              </Fragment>
-            ))}
+          <select
+            ref={refTop}
+            onChange={onChange}
+            defaultValue={chapter}
+            className="w-20 border"
+          >
+            {Object.keys(list ?? {})
+              .reverse()
+              .map((key, index) => (
+                <Fragment key={index}>
+                  <option value={list[key].chapter}>{key}</option>
+                </Fragment>
+              ))}
           </select>
           <ChapterButton
             className="rounded-tr-lg  rounded-br-lg"
             id={mangaId}
             lang={lang}
+            keyButton={keyCode}
+            callback={callback}
             altIndex={1}
             chapter={chapter}
             list={list}
@@ -74,44 +115,43 @@ function ChapterPage() {
             </Fragment>
           ))}
         </div>
+        <div className="flex justify-center item-center gap-2">
+          <ChapterButton
+            className="rounded-tl-lg  rounded-bl-lg"
+            id={mangaId}
+            lang={lang}
+            altIndex={-1}
+            chapter={chapter}
+            list={list}
+          >
+            <GrFormPreviousLink size={25} />
+          </ChapterButton>
+          <select
+            ref={refBot}
+            onChange={onChange}
+            defaultValue={chapter}
+            className="w-20 border"
+          >
+            {Object.keys(list ?? {})
+              .reverse()
+              .map((key, index) => (
+                <Fragment key={index}>
+                  <option value={list[key].chapter}>{key}</option>
+                </Fragment>
+              ))}
+          </select>
+          <ChapterButton
+            className="rounded-tr-lg  rounded-br-lg"
+            id={mangaId}
+            lang={lang}
+            altIndex={1}
+            chapter={chapter}
+            list={list}
+          >
+            <GrFormNextLink size={25} />
+          </ChapterButton>
+        </div>
       </div>
-    </>
-  );
-}
-
-function ChapterButton(props: {
-  children: React.ReactNode;
-  className: string;
-  id?: string;
-  lang?: string;
-  altIndex: number;
-  chapter?: string;
-  list: AggregateChapterMangadex;
-}) {
-  const { children, className, id, lang, altIndex, chapter, list } = props;
-
-  const keys = Object.keys(list ?? {});
-  const index = keys.indexOf(chapter ?? "") + altIndex;
-  const check = index < 0 || index + 1 > keys.length;
-  const obj = list?.[keys[check ? 0 : index]] ?? {};
-
-  function onClick(event: React.MouseEvent<HTMLElement>) {
-    if (check) {
-      event.preventDefault();
-    }
-  }
-
-  return (
-    <>
-      <Link
-        to={`/chapter/${id}/${lang}/${obj.id}/${obj.chapter}`}
-        className={`p-1 ${
-          check ? "bg-gray-400" : "hover:bg-red-700 bg-red-500"
-        } ${className}`}
-        onClick={onClick}
-      >
-        {children}
-      </Link>
     </>
   );
 }

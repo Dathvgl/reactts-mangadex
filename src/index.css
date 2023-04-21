@@ -21,7 +21,7 @@
 }
 
 .lazy-load-image span {
-  @apply w-full;
+  @apply w-full h-full;
 }
 
 .full-body {
