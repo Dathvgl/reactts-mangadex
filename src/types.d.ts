@@ -180,3 +180,21 @@ export type AggregateChapterMangadex = {
     others?: string[];
   };
 };
+
+export type AuthOkMangadex = {
+  token?: {
+    session?: string;
+    refresh?: string;
+  };
+};
+
+export type AuthErrorMangadex = {
+  errors?: [
+    {
+      id?: string;
+      status?: number;
+      title?: string;
+      detail?: string;
+    }
+  ];
+};

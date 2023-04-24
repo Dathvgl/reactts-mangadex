@@ -1,8 +1,13 @@
 import SearchLayoutHome from "../Search";
 import { Link } from "react-router-dom";
 import HeaderSearch from "./components/Search";
+import { useAppDispatch, useAppSelector } from "~/redux/store";
+import { logout } from "~/redux/slices/auth";
 
 function HeaderLayoutHome() {
+  const dispatch = useAppDispatch();
+  const isAuthen = useAppSelector((state) => state.auth.isAuthen);
+
   return (
     <>
       <div className="bg-blue-500">
@@ -16,7 +21,27 @@ function HeaderLayoutHome() {
           <div className="col-span-2">
             <SearchLayoutHome />
           </div>
-          <div className="text-end">User</div>
+          <div className="text-end">
+            {isAuthen != undefined && (
+              <>
+                {isAuthen ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        dispatch(logout());
+                      }}
+                    >
+                      Sign out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth/signin">Sign in</Link>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="bg-black sticky top-0 z-40">
