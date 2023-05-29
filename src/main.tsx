@@ -2,16 +2,16 @@ import moment from "moment";
 import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { store } from "~/redux/store";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LayoutHome from "~/layouts/LayoutHome";
 import LayoutChapter from "~/layouts/LayoutChapter";
+import LayoutHome from "~/layouts/LayoutHome";
+import { store } from "~/redux/store";
 
-import "./index.css";
 import "flag-icons/css/flag-icons.min.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import "./index.css";
 
 const HomePage = lazy(() => import("~/routes/home/Home"));
 const DetailPage = lazy(() => import("~/routes/detail/Detail"));
@@ -23,6 +23,8 @@ const ErrorPage = lazy(() => import("~/routes/Error"));
 
 // ABCDEFGHIJKLMNOPQRSTUVWXYZ
 export const server: string = import.meta.env.VITE_SERVER;
+export const siteKey: string = import.meta.env.VITE_SITE_KEY;
+
 export const mangadexUrl = "https://api.mangadex.org";
 
 export const capitalize = (str: string) => {
@@ -38,8 +40,9 @@ export const title = (obj?: { [key: string]: string }) => {
   return "";
 };
 
-export const cover = (id: string, name: string) =>
-  `https://uploads.mangadex.org/covers/${id}/${name}`;
+export const cover = (id?: string, name?: string) => {
+  return `https://uploads.mangadex.org/covers/${id}/${name}`;
+};
 
 export function fromNow(str?: string) {
   const date = moment(str).fromNow();

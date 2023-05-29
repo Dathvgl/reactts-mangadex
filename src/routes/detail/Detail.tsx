@@ -1,14 +1,9 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { server } from "~/main";
-import { MangaMangadex, ResultMangadex } from "~/types";
+import MangadexService from "~/models/MangadexService";
+import { MangaMangadex } from "~/types";
 import HeaderDetail from "./components/Header";
 import ItemDetail from "./components/Item";
-
-type DataType = ResultMangadex & {
-  data?: MangaMangadex;
-};
 
 function DetailPage() {
   const { id } = useParams();
@@ -19,14 +14,8 @@ function DetailPage() {
   }, [id]);
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/manga/${id}`);
-
-    if (res.status == 200) {
-      const data: DataType = res.data;
-      if (data?.result == "ok") {
-        setState(() => data.data);
-      }
-    }
+    const res = await MangadexService.mangaDetail(id);
+    setState(() => res);
   }
 
   if (state == undefined) {

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -6,33 +5,25 @@ import CoverSrc from "~/components/CoverSrc";
 import ISO6391 from "~/components/ISO6391";
 import useDebounce from "~/hooks/Debounce";
 import { useMangadexChapter } from "~/hooks/Mangadex";
-import { server, title } from "~/main";
-import { MangaMangadex, MangaResponseMangadex } from "~/types";
+import { title } from "~/main";
+import MangadexService from "~/models/MangadexService";
+import { MangaMangadex } from "~/types";
 
 function SearchLayoutHome() {
   const ref = useRef<HTMLInputElement | null>(null);
   const [state, setState] = useState<string>("");
-  const [list, setList] = useState<MangaMangadex[]>([]);
+  const [list, setList] = useState<MangaMangadex[]>();
 
-  const search = useDebounce<string>(state);
+  const title = useDebounce<string>(state);
 
   useEffect(() => {
     onSearch();
-  }, [search]);
+  }, [title]);
 
   async function onSearch() {
-    if (search) {
-      const res = await axios.get(
-        `${server}/api/mangadex/search?title=${search}`
-      );
-
-      if (res.status == 200) {
-        const data: MangaResponseMangadex = res.data;
-        if (data.result == "ok") {
-          setList(() => data.data ?? []);
-        }
-      }
-    }
+    if (!title) return;
+    const res = await MangadexService.manga({ title });
+    setList(() => res?.data);
   }
 
   function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -74,7 +65,7 @@ function SearchLayoutHome() {
         {state && (
           <>
             <div className="absolute z-50 border border-black rounded-bl rounded-br divide-y-2 bg-white w-full h-80 base-scrollbar">
-              {list.map((item, index) => (
+              {list?.map((item, index) => (
                 <Fragment key={index}>
                   <SearchItem item={item} />
                 </Fragment>

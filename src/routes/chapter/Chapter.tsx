@@ -1,11 +1,9 @@
-import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useListVolume } from "~/layouts/LayoutChapter";
-import { server } from "~/main";
-import { ImageResponseMangadex } from "~/types";
+import MangadexService from "~/models/MangadexService";
 import ChapterButton from "./components/Button";
 
 function ChapterPage() {
@@ -14,7 +12,7 @@ function ChapterPage() {
   const { list } = useListVolume();
   const refTop = useRef<HTMLSelectElement | null>(null);
   const refBot = useRef<HTMLSelectElement | null>(null);
-  const [state, setState] = useState<string[]>([]);
+  const [state, setState] = useState<string[]>();
   const [keyCode, setKeyCode] = useState("");
 
   useEffect(() => {
@@ -44,11 +42,8 @@ function ChapterPage() {
   }, [chapter]);
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/image/${chapterId}`);
-    if (res.status == 200) {
-      const data: ImageResponseMangadex = res.data;
-      setState(() => data.data || []);
-    }
+    const res = await MangadexService.image(chapterId);
+    setState(() => res);
   }
 
   function callback() {
@@ -61,7 +56,7 @@ function ChapterPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  if (state.length == 0) {
+  if (state?.length == 0) {
     return <></>;
   }
 
@@ -109,7 +104,7 @@ function ChapterPage() {
           </ChapterButton>
         </div>
         <div className="flex flex-col items-center">
-          {state.map((item, index) => (
+          {state?.map((item, index) => (
             <Fragment key={index}>
               <LazyLoadImage effect="blur" src={item} alt="Error" />
             </Fragment>

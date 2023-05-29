@@ -15,7 +15,7 @@ function ISO6391(props: { str?: string }) {
 
   async function init() {
     const res = await axios.get("/iso6391.json");
-    // console.log(str);
+
     if (res.status == 200 && str) {
       const data: { [key: string]: string } = res.data;
       if (data[extra]) {

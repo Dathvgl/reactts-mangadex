@@ -1,15 +1,14 @@
-import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import ReactPaginate from "react-paginate";
+import { Link } from "react-router-dom";
 import ISO6391 from "~/components/ISO6391";
-import { fromNow, server } from "~/main";
+import { fromNow } from "~/main";
+import MangadexService from "~/models/MangadexService";
 import {
   ChapterMangadex,
-  ChaptersResponseMangadex,
-  MangaMangadex,
+  MangaMangadex
 } from "~/types";
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 function ItemDetail(props: { item: MangaMangadex }) {
   const { item } = props;
@@ -27,18 +26,14 @@ function ItemDetail(props: { item: MangaMangadex }) {
   }, [item.id, sort, offset]);
 
   async function init() {
-    const res = await axios.get(
-      `${server}/api/mangadex/mangaChapter/${item.id}`,
-      { params: { limit: baseOffset, offset, sort } }
-    );
+    const re = await MangadexService.mangaFeed(item.id, {
+      limit: baseOffset,
+      offset,
+      order: { volume: sort, chapter: sort },
+    });
 
-    if (res.status == 200) {
-      const data: ChaptersResponseMangadex = res.data;
-      if (data.result == "ok") {
-        setTotal(() => Math.ceil((data.total ?? 0) / baseOffset));
-        setState(() => data.data ?? []);
-      }
-    }
+    setTotal(() => Math.ceil((re?.total ?? 0) / baseOffset));
+    setState(() => re?.data ?? []);
   }
 
   function onPageChange(selectedItem: { selected: number }) {

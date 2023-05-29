@@ -30,7 +30,7 @@ function CoverSrc({ altHeight, disableLink = false, item, link }: Props) {
 }
 
 function CoverItem(props: Props) {
-  const { altHeight, disableLink, item, link } = props;
+  const { altHeight, item } = props;
 
   const image = useMangadexCover(item);
   const [aspect, setAspect] = useState<number | undefined>();

@@ -1,8 +1,8 @@
-import SearchLayoutHome from "../Search";
 import { Link } from "react-router-dom";
-import HeaderSearch from "./components/Search";
-import { useAppDispatch, useAppSelector } from "~/redux/store";
 import { logout } from "~/redux/slices/auth";
+import { useAppDispatch, useAppSelector } from "~/redux/store";
+import SearchLayoutHome from "../Search";
+import HeaderSearch from "./components/Search";
 
 function HeaderLayoutHome() {
   const dispatch = useAppDispatch();

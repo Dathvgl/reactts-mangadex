@@ -6,9 +6,14 @@ export type ResultMangadex = {
   total?: number;
 };
 
-export type MangaResponseMangadex = ResultMangadex & {
+export type MangasResponseMangadex = ResultMangadex & {
   response?: string;
   data?: MangaMangadex[];
+};
+
+export type MangaResponseMangadex = ResultMangadex & {
+  response?: string;
+  data?: MangaMangadex;
 };
 
 export type MangaSearchMangadex = {

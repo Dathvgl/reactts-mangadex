@@ -1,15 +1,9 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { server } from "~/main";
-import { MangaMangadex, MangaResponseMangadex } from "~/types";
-import SliderHome from "./components/Slider";
+import MangadexService from "~/models/MangadexService";
+import { MangaMangadex } from "~/types";
 import FollowHome from "./components/Follow";
 import NewsHome from "./components/News";
-
-type DataType = {
-  popularManga?: MangaResponseMangadex;
-  newsChapter?: MangaResponseMangadex;
-};
+import SliderHome from "./components/Slider";
 
 function HomePage() {
   const [slider, setSlider] = useState<MangaMangadex[]>([]);
@@ -20,18 +14,9 @@ function HomePage() {
   }, []);
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/home`);
-    if (res.status == 200) {
-      const data: DataType = res.data;
-
-      if (data.popularManga?.result == "ok") {
-        setSlider(() => data.popularManga?.data ?? []);
-      }
-
-      if (data.newsChapter?.result == "ok") {
-        setNews(() => data.newsChapter?.data ?? []);
-      }
-    }
+    const res = await MangadexService.home();
+    setSlider(() => res?.popularManga?.data ?? []);
+    setNews(() => res?.newsChapter?.data ?? []);
   }
 
   return (

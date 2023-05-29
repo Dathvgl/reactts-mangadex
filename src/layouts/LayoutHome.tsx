@@ -14,7 +14,6 @@ function LayoutHome() {
 
 function ContentLayoutHome() {
   const location = useLocation();
-
   const chapter = location.pathname.includes("/chapter");
 
   return (

@@ -1,8 +1,7 @@
-import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { server } from "~/main";
-import { TagMangadex, TagResponseMangadex } from "~/types";
+import MangadexService from "~/models/MangadexService";
+import { TagMangadex } from "~/types";
 
 function HeaderSearch() {
   const [state, setState] = useState<TagMangadex[]>();
@@ -12,13 +11,8 @@ function HeaderSearch() {
   }, []);
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/tag`);
-    if (res.status == 200) {
-      const data: TagResponseMangadex = res.data;
-      if (data.result == "ok") {
-        setState(() => data.data);
-      }
-    }
+    const res = await MangadexService.mangaTag();
+    setState(() => res);
   }
 
   return (

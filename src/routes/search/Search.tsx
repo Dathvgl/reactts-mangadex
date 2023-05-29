@@ -1,17 +1,14 @@
-import axios from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import ReactPaginate from "react-paginate";
 import { useLocation } from "react-router-dom";
-import { server } from "~/main";
+import MangadexService from "~/models/MangadexService";
 import {
   MangaMangadex,
-  MangaResponseMangadex,
   MangaSearchMangadex,
-  TagMangadex,
-  TagResponseMangadex,
+  TagMangadex
 } from "~/types";
 import SearchItem from "./components/Item";
-import ReactPaginate from "react-paginate";
-import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import SearchTag from "./components/Tag";
 
 function SearchPage() {
@@ -37,44 +34,31 @@ function SearchPage() {
   }, [search]);
 
   async function base() {
-    const res = await axios.get(`${server}/api/mangadex/tag`);
-    if (res.status == 200) {
-      const data: TagResponseMangadex = res.data;
-      if (data.result == "ok") {
-        const groups = (data.data ?? [])
-          .sort((a, b) => {
-            const aKey = Object.keys(a.attributes?.name ?? {})[0];
-            const bKey = Object.keys(b.attributes?.name ?? {})[0];
-            const aName = a.attributes?.name?.[aKey];
-            const bName = b.attributes?.name?.[bKey];
-            return aName?.localeCompare(bName ?? "") ?? 0;
-          })
-          .reduce((acc: Record<string, TagMangadex[]>, item) => {
-            if (!acc[item.attributes?.group ?? ""]) {
-              acc[item.attributes?.group ?? ""] = [];
-            }
+    const res = await MangadexService.mangaTag();
+    const list = res
+      ?.sort((a, b) => {
+        const aKey = Object.keys(a.attributes?.name ?? {})[0];
+        const bKey = Object.keys(b.attributes?.name ?? {})[0];
+        const aName = a.attributes?.name?.[aKey];
+        const bName = b.attributes?.name?.[bKey];
+        return aName?.localeCompare(bName ?? "") ?? 0;
+      })
+      .reduce((acc: Record<string, TagMangadex[]>, item) => {
+        if (!acc[item.attributes?.group ?? ""]) {
+          acc[item.attributes?.group ?? ""] = [];
+        }
 
-            acc[item.attributes?.group ?? ""].push(item);
-            return acc;
-          }, {});
+        acc[item.attributes?.group ?? ""].push(item);
+        return acc;
+      }, {});
 
-        setTag(() => groups);
-      }
-    }
+    setTag(() => list);
   }
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/adSearch`, {
-      params: { query: JSON.stringify(search) },
-    });
-
-    if (res.status == 200) {
-      const data: MangaResponseMangadex = res.data;
-      if (data.result == "ok") {
-        setTotal(() => Math.ceil((data.total ?? 0) / baseOffset));
-        setList(() => data.data);
-      }
-    }
+    const res = await MangadexService.manga(search);
+    setTotal(() => Math.ceil((res?.total ?? 0) / baseOffset));
+    setList(() => res?.data);
   }
 
   function checkTag(str: string, id: string) {
@@ -125,7 +109,12 @@ function SearchPage() {
           const list = tag?.[key] ?? [];
           return (
             <Fragment key={index}>
-              <SearchTag base={tagState} title={key} list={list} callback={checkTag} />
+              <SearchTag
+                base={tagState}
+                title={key}
+                list={list}
+                callback={checkTag}
+              />
             </Fragment>
           );
         })}

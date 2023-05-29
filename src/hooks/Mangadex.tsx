@@ -1,15 +1,9 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { server, cover } from "~/main";
-import {
-  ChapterMangadex,
-  ChaptersResponseMangadex,
-  CoverResponseMangadex,
-  MangaMangadex,
-} from "~/types";
+import MangadexService from "~/models/MangadexService";
+import { ChapterMangadex, MangaMangadex } from "~/types";
 
 export function useMangadexCover(item: MangaMangadex) {
-  const [state, setState] = useState("");
+  const [state, setState] = useState<string>();
 
   useEffect(() => {
     init();
@@ -20,17 +14,8 @@ export function useMangadexCover(item: MangaMangadex) {
       ({ type }) => type == "cover_art"
     )?.id;
 
-    if (coverId) {
-      const res = await axios.get(`${server}/api/mangadex/cover/${coverId}`);
-      if (res.status == 200) {
-        const data: CoverResponseMangadex = res.data;
-        if (data.result == "ok") {
-          const id = item.id ?? "";
-          const name = data.data?.attributes?.fileName ?? "";
-          setState(() => cover(id, name));
-        }
-      }
-    }
+    const res = await MangadexService.cover(item.id, coverId);
+    setState(() => res);
   }
 
   return state;
@@ -38,7 +23,6 @@ export function useMangadexCover(item: MangaMangadex) {
 
 export function useMangadexChapter(id?: string, limit: number = 3) {
   if (id == undefined) return undefined;
-
   const [state, setState] = useState<ChapterMangadex[]>();
 
   useEffect(() => {
@@ -46,15 +30,12 @@ export function useMangadexChapter(id?: string, limit: number = 3) {
   }, [id]);
 
   async function init() {
-    const res = await axios.get(`${server}/api/mangadex/chapter/${id}`, {
-      params: { limit },
+    const res = await MangadexService.mangaFeed(id, {
+      limit,
+      order: { updatedAt: "desc" },
     });
-    if (res.status == 200) {
-      const data: ChaptersResponseMangadex = res.data;
-      if (data.result == "ok") {
-        setState(() => data.data);
-      }
-    }
+
+    setState(() => res?.data);
   }
 
   return state;

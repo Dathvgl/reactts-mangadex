@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z, ZodType } from "zod";
 import InputTSX from "./components/Input";
-import { useNavigate } from "react-router-dom";
 
 type FormDataType = {
   username: string;
@@ -32,10 +32,14 @@ function SignUpPage() {
 
   const navigate = useNavigate();
 
-  function onSubmit(data: FormDataType) {
+  async function onSubmit(data: FormDataType) {
     const username = data.username;
     const email = data.email;
     const password = data.password;
+
+    // const captchaValue = refCapcha?.current?.getValue();
+    // if (!captchaValue) return;
+    // await MangadexService.auth();
   }
 
   function signIn() {
@@ -97,6 +101,8 @@ function SignUpPage() {
                 errors={errors}
                 register={register}
               />
+              <br />
+              {/* <ReCAPTCHA ref={refCapcha} sitekey={mangadexSiteKey} /> */}
               <input
                 value="Sign Up"
                 type="submit"
