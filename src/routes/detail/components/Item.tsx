@@ -3,12 +3,9 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import ISO6391 from "~/components/ISO6391";
-import { fromNow } from "~/main";
+import { capitalize, chapterTitle, fromNow } from "~/globals";
 import MangadexService from "~/models/MangadexService";
-import {
-  ChapterMangadex,
-  MangaMangadex
-} from "~/types";
+import { ChapterMangadex, MangaMangadex } from "~/types";
 
 function ItemDetail(props: { item: MangaMangadex }) {
   const { item } = props;
@@ -50,33 +47,40 @@ function ItemDetail(props: { item: MangaMangadex }) {
 
   return (
     <>
-      <div className="mt-4 flex max-lg:flex-col max-lg:gap-4">
+      <div className="mt-4 flex max-lg:flex-col gap-4">
         <div className="flex flex-col lg:w-72">
-          <div className="font-bold mb-2">Demographic</div>
-          <Link
-            to="/"
-            className="px-2 py-1 rounded-lg text-xs bg-slate-200 font-semibold w-fit hover:bg-orange-500 hover:bg-opacity-50"
-          >
-            {item.attributes?.publicationDemographic}
-          </Link>
+          {item.attributes?.publicationDemographic && (
+            <>
+              <div className="font-bold mb-2">Demographic</div>
+              <Link
+                to="/"
+                className="px-2 py-1 rounded-lg text-xs bg-slate-200 font-semibold w-fit hover:bg-orange-500 hover:bg-opacity-50"
+              >
+                {capitalize(item.attributes?.publicationDemographic)}
+              </Link>
+            </>
+          )}
           <br />
-          <div className="font-bold">Alternative Titles</div>
-          {item.attributes?.altTitles
-            ?.sort((a, b) => {
-              const aKey = Object.keys(a)[0];
-              const bKey = Object.keys(b)[0];
-              return aKey.localeCompare(bKey);
-            })
-            ?.map((item, index) => {
-              const key = Object.keys(item)[0];
-              return (
-                <Fragment key={index}>
-                  <div className="flex gap-4">
-                    <ISO6391 str={key} /> {item[key]}
-                  </div>
-                </Fragment>
-              );
-            })}
+          <div className="p-2 bg-slate-100 rounded">
+            <div className="font-bold">Alternative Titles</div>
+            {item.attributes?.altTitles
+              ?.sort((a, b) => {
+                const aKey = Object.keys(a)[0];
+                const bKey = Object.keys(b)[0];
+                return aKey.localeCompare(bKey);
+              })
+              ?.map((item, index) => {
+                const key = Object.keys(item)[0];
+                return (
+                  <Fragment key={index}>
+                    <div className="flex gap-4 truncate">
+                      <ISO6391 str={key} />
+                      <div className="flex-1 truncate">{item[key]}</div>
+                    </div>
+                  </Fragment>
+                );
+              })}
+          </div>
         </div>
         <div className="flex-1 flex flex-col">
           <div className="flex">
@@ -140,11 +144,7 @@ function ItemAll(props: {
             to={`/chapter/${id}/${attributes?.translatedLanguage}/${item.id}/${attributes?.chapter}`}
           >
             <ISO6391 str={attributes?.translatedLanguage} />{" "}
-            {attributes?.title ? (
-              <>{attributes?.title}</>
-            ) : (
-              <>Ch. {attributes?.chapter}</>
-            )}
+            {chapterTitle(attributes?.title, attributes?.chapter)}
           </Link>
           <i className="whitespace-nowrap text-[11px] text-gray-500">
             {fromNow(attributes?.updatedAt)}
@@ -197,7 +197,11 @@ function ItemAll(props: {
                           (a, b) => a.lang?.localeCompare(b.lang ?? "") ?? 0
                         )
                         .map((item, index) => (
-                          <Fragment key={index}>{item.child}</Fragment>
+                          <Fragment key={index}>
+                            <div className="px-2 py-1 item-hover">
+                              {item.child}
+                            </div>
+                          </Fragment>
                         ))}
                     </div>
                   </div>

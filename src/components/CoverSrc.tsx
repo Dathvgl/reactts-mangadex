@@ -5,32 +5,28 @@ import { useMangadexCover } from "~/hooks/Mangadex";
 import { MangaMangadex } from "~/types";
 
 type Props = {
-  altHeight?: string;
+  className?: string;
   disableLink?: boolean;
   link?: string;
   item: MangaMangadex;
 };
 
-function CoverSrc({ altHeight, disableLink = false, item, link }: Props) {
+function CoverSrc({ className, disableLink = false, item, link }: Props) {
   return (
     <>
       {disableLink ? (
-        <>
-          <CoverItem altHeight={altHeight} item={item} />
-        </>
+        <CoverItem className={className} item={item} />
       ) : (
-        <>
-          <Link to={link ?? ""}>
-            <CoverItem altHeight={altHeight} item={item} />
-          </Link>
-        </>
+        <Link to={link ?? ""}>
+          <CoverItem className={className} item={item} />
+        </Link>
       )}
     </>
   );
 }
 
 function CoverItem(props: Props) {
-  const { altHeight, item } = props;
+  const { className, item } = props;
 
   const image = useMangadexCover(item);
   const [aspect, setAspect] = useState<number | undefined>();
@@ -46,7 +42,7 @@ function CoverItem(props: Props) {
     <>
       <div
         className={`w-full ${
-          altHeight ?? "h-44 max-sm:h-60"
+          className ?? "h-44 max-sm:h-60"
         } relative overflow-hidden rounded-lg lazy-load-image`}
       >
         <LazyLoadImage

@@ -1,15 +1,15 @@
 import axios from "axios";
-import { cover, server } from "~/main";
+import { cover, server } from "~/globals";
 import {
-  AggregateResponseMangadex,
   AggregateChapterMangadex,
-  MangasResponseMangadex,
-  MangaSearchMangadex,
-  TagResponseMangadex,
-  CoverResponseMangadex,
+  AggregateResponseMangadex,
   ChaptersResponseMangadex,
-  MangaResponseMangadex,
+  CoverResponseMangadex,
   ImageResponseMangadex,
+  MangaResponseMangadex,
+  MangaSearchMangadex,
+  MangasResponseMangadex,
+  TagResponseMangadex,
 } from "~/types";
 
 class MangadexService {
@@ -93,10 +93,6 @@ class MangadexService {
     if (res.status != 200) return;
     const data: ImageResponseMangadex = res.data;
     return data.data;
-  }
-
-  static async auth() {
-    const res = await axios.post(`${server}/api/mangadex/auth`, {});
   }
 
   static async home() {

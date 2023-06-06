@@ -79,7 +79,7 @@ function ChapterPage() {
           <select
             ref={refTop}
             onChange={onChange}
-            defaultValue={chapter}
+            value={chapter}
             className="w-20 border"
           >
             {Object.keys(list ?? {})
@@ -124,7 +124,7 @@ function ChapterPage() {
           <select
             ref={refBot}
             onChange={onChange}
-            defaultValue={chapter}
+            value={chapter}
             className="w-20 border"
           >
             {Object.keys(list ?? {})

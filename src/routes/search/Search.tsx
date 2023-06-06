@@ -3,13 +3,10 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import ReactPaginate from "react-paginate";
 import { useLocation } from "react-router-dom";
 import MangadexService from "~/models/MangadexService";
-import {
-  MangaMangadex,
-  MangaSearchMangadex,
-  TagMangadex
-} from "~/types";
+import { MangaMangadex, MangaSearchMangadex, TagMangadex } from "~/types";
 import SearchItem from "./components/Item";
 import SearchTag from "./components/Tag";
+import Pagination from "~/components/Pagination";
 
 function SearchPage() {
   const { state } = useLocation();
@@ -133,22 +130,7 @@ function SearchPage() {
       </div>
       <br />
       <div className="flex justify-center">
-        <ReactPaginate
-          className="flex gap-4"
-          pageLinkClassName="flex items-center justify-center px-2 font-bold rounded border border-black min-w-8 h-8 hover:bg-black hover:bg-opacity-10"
-          activeLinkClassName="bg-orange-500"
-          containerClassName="flex item-center justify-center"
-          breakLinkClassName="flex items-center justify-center rounded w-8 h-8 hover:bg-black hover:bg-opacity-10"
-          disabledLinkClassName="bg-gray-300"
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={1}
-          pageCount={total}
-          onPageChange={onPageChange}
-          previousLabel={<GrFormPrevious size={30} />}
-          previousLinkClassName="flex items-center justify-center rounded-full w-8 h-8 hover:bg-black hover:bg-opacity-10"
-          nextLabel={<GrFormNext size={30} />}
-          nextLinkClassName="flex items-center justify-center rounded-full w-8 h-8 hover:bg-black hover:bg-opacity-10"
-        />
+        <Pagination total={total} onPageChange={onPageChange} />
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import HeaderLayoutHome from "./components/header/Header";
 import FooterLayoutHome from "./components/Footer";
+import { ToastContainer } from "react-toastify";
 
 function LayoutHome() {
   return (
@@ -8,6 +9,7 @@ function LayoutHome() {
       <HeaderLayoutHome />
       <ContentLayoutHome />
       <FooterLayoutHome />
+      <ToastContainer position="bottom-left" autoClose={2000} />
     </>
   );
 }

@@ -24,6 +24,10 @@
   @apply w-full h-full;
 }
 
+.item-hover {
+  @apply hover:bg-black hover:bg-opacity-10
+}
+
 .full-body {
   @apply w-screen h-screen;
 }

@@ -2,8 +2,8 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import CoverSrc from "~/components/CoverSrc";
 import ISO6391 from "~/components/ISO6391";
+import { chapterTitle, fromNow, keyDefault } from "~/globals";
 import { useMangadexChapter } from "~/hooks/Mangadex";
-import { title, fromNow } from "~/main";
 import { MangaMangadex } from "~/types";
 
 function SearchItem(props: { item: MangaMangadex }) {
@@ -15,7 +15,7 @@ function SearchItem(props: { item: MangaMangadex }) {
     <>
       <figure className="w-full">
         <CoverSrc
-          altHeight="h-44 max-sm:h-48"
+          className="h-44 max-sm:h-48"
           item={item}
           link={`/detail/${item.id}`}
         />
@@ -24,7 +24,7 @@ function SearchItem(props: { item: MangaMangadex }) {
             to={`/detail/${item.id}`}
             className="line-clamp-2 my-1 font-semibold hover:text-sky-600"
           >
-            {title(item.attributes?.title)}
+            {keyDefault("en", item.attributes?.title)}
           </Link>
           {chapters && (
             <ul className="flex flex-col  bg-green-500 bg-opacity-10 divide-y-2 divide-black rounded">
@@ -36,14 +36,17 @@ function SearchItem(props: { item: MangaMangadex }) {
                         to={`/chapter/${item?.id}/${child.attributes?.translatedLanguage}/${child.id}/${child?.attributes?.chapter}`}
                         className="truncate hover:text-sky-600"
                       >
-                        Chapter: {child?.attributes?.chapter}
+                        {chapterTitle(
+                          child?.attributes?.title,
+                          child?.attributes?.chapter
+                        )}
                       </Link>
                       <ISO6391 str={child.attributes?.translatedLanguage} />
                     </div>
                     {child.attributes?.volume ? (
                       <>
                         <div className="flex justify-between items-end w-full">
-                          Vl: {child.attributes?.volume}
+                          Vol: {child.attributes?.volume}
                           <i className="whitespace-nowrap text-[11px] text-gray-500">
                             {fromNow(child?.attributes?.updatedAt)}
                           </i>

@@ -3,9 +3,9 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import CoverSrc from "~/components/CoverSrc";
 import ISO6391 from "~/components/ISO6391";
+import { keyDefault } from "~/globals";
 import useDebounce from "~/hooks/Debounce";
 import { useMangadexChapter } from "~/hooks/Mangadex";
-import { title } from "~/main";
 import MangadexService from "~/models/MangadexService";
 import { MangaMangadex } from "~/types";
 
@@ -91,14 +91,14 @@ function SearchItem(props: { item: MangaMangadex }) {
         <div className="w-16">
           <CoverSrc
             disableLink
-            altHeight="h-16"
+            className="h-16"
             item={item}
             link={`/detail/${item.id}`}
           />
         </div>
         <div className="flex-1 flex flex-col truncate">
           <div className="truncate font-bold">
-            {title(item?.attributes?.title)}
+            {keyDefault("en", item?.attributes?.title)}
           </div>
           {chapter && (
             <>
@@ -113,7 +113,7 @@ function SearchItem(props: { item: MangaMangadex }) {
           <div className="truncate text-sm">
             {item.attributes?.tags?.map((item, index, { length }) => (
               <Fragment key={index}>
-                {title(item.attributes?.name)}
+                {keyDefault("en", item.attributes?.name)}
                 {index !== length - 1 && ", "}
               </Fragment>
             ))}

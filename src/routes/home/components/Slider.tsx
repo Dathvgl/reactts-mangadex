@@ -2,8 +2,8 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Slider, { Settings } from "react-slick";
 import CoverSrc from "~/components/CoverSrc";
+import { fromNow, keyDefault } from "~/globals";
 import { useMangadexChapter } from "~/hooks/Mangadex";
-import { fromNow, title } from "~/main";
 import { MangaMangadex } from "~/types";
 
 function SliderHome(props: { data: MangaMangadex[] }) {
@@ -83,7 +83,7 @@ function SliderItem(props: { item: MangaMangadex }) {
               to={`/detail/${item.id}`}
               className="line-clamp-1 text-center font-semibold hover:text-sky-600"
             >
-              {title(item.attributes?.title)}
+              {keyDefault("en", item.attributes?.title)}
             </Link>
             <div className="text-sm flex justify-between items-center gap-2">
               {chapter && (

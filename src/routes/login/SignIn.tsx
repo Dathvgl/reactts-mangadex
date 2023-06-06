@@ -1,20 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z, ZodType } from "zod";
-import InputTSX from "./components/Input";
-import { login } from "~/redux/slices/auth";
-import { useAppDispatch } from "~/redux/store";
 import { useNavigate } from "react-router-dom";
+import { z, ZodType } from "zod";
+import { login } from "~/redux/slices/auth";
+import { useAppDispatch, useAppSelector } from "~/redux/store";
+import InputTSX from "./components/Input";
 
 type FormDataType = {
-  username: string;
+  email: string;
   password: string;
 };
 
 function SignInPage() {
   const scheme: ZodType<FormDataType> = z.object({
-    username: z.string(),
-    password: z.string().min(8),
+    email: z.string().email(),
+    password: z.string().min(3),
   });
 
   const {
@@ -25,11 +26,16 @@ function SignInPage() {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const isUser = useAppSelector((state) => state.auth.isUser);
+
+  useEffect(() => {
+    if (isUser) navigate("/");
+  }, [isUser]);
 
   function onSubmit(data: FormDataType) {
-    const username = data.username;
+    const email = data.email;
     const password = data.password;
-    dispatch(login({ username, password }));
+    dispatch(login({ email, password }));
   }
 
   function signUp() {
@@ -52,8 +58,8 @@ function SignInPage() {
               </div>
               <hr className="w-12 border-4 border-green-500 rounded mx-auto my-6" />
               <InputTSX<FormDataType>
-                name="username"
-                label="Username or Email"
+                name="email"
+                label="Email"
                 errors={errors}
                 register={register}
               />

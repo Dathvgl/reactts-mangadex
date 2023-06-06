@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
-import { logout } from "~/redux/slices/auth";
-import { useAppDispatch, useAppSelector } from "~/redux/store";
 import SearchLayoutHome from "../Search";
 import HeaderSearch from "./components/Search";
+import HeaderUser from "./components/User";
 
 function HeaderLayoutHome() {
-  const dispatch = useAppDispatch();
-  const isAuthen = useAppSelector((state) => state.auth.isAuthen);
-
   return (
     <>
       <div className="bg-blue-500">
@@ -21,32 +17,17 @@ function HeaderLayoutHome() {
           <div className="col-span-2">
             <SearchLayoutHome />
           </div>
-          <div className="text-end">
-            {isAuthen != undefined && (
-              <>
-                {isAuthen ? (
-                  <>
-                    <button
-                      onClick={() => {
-                        dispatch(logout());
-                      }}
-                    >
-                      Sign out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/auth/signin">Sign in</Link>
-                  </>
-                )}
-              </>
-            )}
+          <div className="flex justify-end">
+            <HeaderUser />
           </div>
         </div>
       </div>
       <div className="bg-black sticky top-0 z-40">
         <div className="container mx-auto relative">
           <ul className="text-white uppercase font-semibold flex divide-x-2 divide-gray-500">
+            <Link to="/" className="hover:text-orange-500">
+              <li className="p-2">Home</li>
+            </Link>
             <Link to="/" className="hover:text-orange-500">
               <li className="p-2">Hot</li>
             </Link>

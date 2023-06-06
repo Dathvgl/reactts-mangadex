@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { useCollapse } from "react-collapsed";
 import SpanBox from "~/components/SpanBox";
-import { capitalize } from "~/main";
+import { capitalize } from "~/globals";
 import { TagMangadex } from "~/types";
 
 function SearchTag(props: {
