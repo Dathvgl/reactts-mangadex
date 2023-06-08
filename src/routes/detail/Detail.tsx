@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import MangadexService from "~/models/MangadexService";
 import { MangaMangadex } from "~/types";
 import HeaderDetail from "./components/Header";
-import ItemDetail from "./components/Item";
+import ItemDetail from "./components/item/Item";
 
 function DetailPage() {
   const { id } = useParams();

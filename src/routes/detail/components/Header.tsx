@@ -16,13 +16,13 @@ function HeaderDetail(props: { item: MangaMangadex }) {
         <div className="absolute bg-slate-300 w-full h-1/2">
           <CoverSrc className="h-full blur-[2px]" disableLink item={item} />
         </div>
-        <div className="flex z-40 pl-5 pt-5">
+        <div className="flex max-md:flex-col z-40 px-5 pt-5 gap-4">
           <div className="w-52">
             <CoverSrc disableLink className="h-60" item={item} />
           </div>
-          <div className="ml-4 flex flex-col justify-between gap-4 z-40">
-            <div className="flex flex-col gap-4 justify-between h-full">
-              <div className="text-3xl text-white font-bold line-clamp-2">
+          <div className="flex flex-col flex-1 justify-between gap-4 z-40">
+            <div className="flex flex-col gap-4 justify-between h-full py-2">
+              <div className="text-3xl text-white font-bold line-clamp-2 text-shadow-1">
                 {keyDefault("en", item.attributes?.title)}
               </div>
               <div className="line-clamp-2">

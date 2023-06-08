@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Slider, { Settings } from "react-slick";
 import CoverSrc from "~/components/CoverSrc";
+import ISO6391 from "~/components/ISO6391";
 import { fromNow, keyDefault } from "~/globals";
 import { useMangadexChapter } from "~/hooks/Mangadex";
 import { MangaMangadex } from "~/types";
@@ -88,12 +89,17 @@ function SliderItem(props: { item: MangaMangadex }) {
             <div className="text-sm flex justify-between items-center gap-2">
               {chapter && (
                 <>
-                  <Link
-                    to={`/chapter/${item?.id}/${chapter.attributes?.translatedLanguage}/${chapter.id}/${chapter?.attributes?.chapter}`}
-                    className="truncate hover:text-sky-600"
-                  >
-                    Chapter {chapter.attributes?.chapter}
-                  </Link>
+                  <div className="flex items-center gap-1">
+                    <div className="w-5">
+                      <ISO6391 str={chapter?.attributes?.translatedLanguage} />
+                    </div>
+                    <Link
+                      to={`/chapter/${item?.id}/${chapter.attributes?.translatedLanguage}/${chapter.id}/${chapter?.attributes?.chapter}`}
+                      className="truncate flex-1 hover:text-sky-600"
+                    >
+                      Chapter {chapter.attributes?.chapter}
+                    </Link>
+                  </div>
                 </>
               )}
               <i className="whitespace-nowrap text-xs ">

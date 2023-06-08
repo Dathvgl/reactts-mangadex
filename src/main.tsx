@@ -20,9 +20,10 @@ const SearchPage = lazy(() => import("~/routes/search/Search"));
 const SignInPage = lazy(() => import("~/routes/login/SignIn"));
 const SignUpPage = lazy(() => import("~/routes/login/SignUp"));
 const ErrorPage = lazy(() => import("~/routes/Error"));
+const GroupPage = lazy(() => import("~/routes/info/group/Group"));
+const UserPage = lazy(() => import("~/routes/info/user/User"));
 
 // ABCDEFGHIJKLMNOPQRSTUVWXYZ
-
 function Loading() {
   return <div>...</div>;
 }
@@ -42,6 +43,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="auth">
               <Route path="signin" element={<SignInPage />} />
               <Route path="signup" element={<SignUpPage />} />
+            </Route>
+            <Route path="info">
+              <Route path="group" element={<GroupPage />} />
+              <Route path="user" element={<UserPage />} />
             </Route>
           </Route>
           <Route path="*" element={<ErrorPage />} />

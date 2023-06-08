@@ -7,12 +7,10 @@ export type ResultMangadex = {
 };
 
 export type MangasResponseMangadex = ResultMangadex & {
-  response?: string;
   data?: MangaMangadex[];
 };
 
 export type MangaResponseMangadex = ResultMangadex & {
-  response?: string;
   data?: MangaMangadex;
 };
 
@@ -88,7 +86,16 @@ export type TagMangadex = {
 
 export type RelationshipMangadex = {
   id?: string;
-  type?: string;
+  type?:
+    | "manga"
+    | "chapter"
+    | "cover_art"
+    | "author"
+    | "artist"
+    | "scanlation_group"
+    | "tag"
+    | "user"
+    | "custom_list";
   related?:
     | "monochrome"
     | "main_story"
@@ -110,7 +117,6 @@ export type RelationshipMangadex = {
 };
 
 export type CoverResponseMangadex = ResultMangadex & {
-  response?: string;
   data?: CoverMangadex;
 };
 
@@ -130,7 +136,6 @@ export type CoverMangadex = {
 };
 
 export type ChaptersResponseMangadex = ResultMangadex & {
-  response?: string;
   data?: ChapterMangadex[];
 };
 
@@ -184,6 +189,52 @@ export type AggregateChapterMangadex = {
     chapter?: string;
     others?: string[];
   };
+};
+
+export type GroupResponseMangadex = ResultMangadex & {
+  data?: GroupMangadex;
+};
+
+export type GroupMangadex = {
+  id?: string;
+  type?: string;
+  attributes?: {
+    name?: string;
+    altNames?: { [key: string]: string }[];
+    website?: string;
+    ircServer?: string;
+    ircChannel?: string;
+    discord?: string;
+    contactEmail?: string;
+    description?: string;
+    twitter?: string;
+    mangaUpdates?: string;
+    focusedLanguage?: string[];
+    locked?: true;
+    official?: true;
+    inactive?: true;
+    exLicensed?: true;
+    publishDelay?: string;
+    version?: number;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+  relationships?: RelationshipMangadex[];
+};
+
+export type UserResponseMangadex = ResultMangadex & {
+  data?: UserMangadex;
+};
+
+export type UserMangadex = {
+  id?: string;
+  type?: string;
+  attributes?: {
+    username?: string;
+    roles?: string[];
+    version?: number;
+  };
+  relationships?: RelationshipMangadex[];
 };
 
 export type AuthOkMangadex = {

@@ -3,14 +3,36 @@ import { cover, server } from "~/globals";
 import {
   AggregateChapterMangadex,
   AggregateResponseMangadex,
+  ChapterMangadex,
   ChaptersResponseMangadex,
   CoverResponseMangadex,
+  GroupResponseMangadex,
   ImageResponseMangadex,
   MangaResponseMangadex,
   MangaSearchMangadex,
   MangasResponseMangadex,
   TagResponseMangadex,
+  UserResponseMangadex,
 } from "~/types";
+
+export type FeedType = { [key: string]: FeedItemType };
+export type FeedItemType = { [key: string]: FeedChildType };
+export type FeedChildType = { [key: string]: ChapterMangadex };
+
+function objectLang(obj?: { [key: string]: ChapterMangadex }) {
+  const keys = Object.keys(obj ?? {}).sort((a, b) => {
+    const langA = obj![a].attributes?.translatedLanguage ?? "";
+    const langB = obj![b].attributes?.translatedLanguage ?? "";
+    return langA.localeCompare(langB);
+  });
+
+  const objNew: FeedChildType = {};
+  keys.forEach((key) => {
+    objNew[key] = obj![key];
+  });
+
+  return objNew;
+}
 
 class MangadexService {
   static async manga(search?: MangaSearchMangadex) {
@@ -76,7 +98,32 @@ class MangadexService {
     const data: ChaptersResponseMangadex = res.data;
 
     if (data.result != "ok") return;
-    return { total: data.total, data: data.data };
+    const obj: FeedType = {};
+
+    data.data?.forEach((item) => {
+      const { id, attributes } = item;
+      const volume = `${attributes?.volume ?? "none"}-vol` ?? "none";
+      const chapter = `${attributes?.chapter}-ch` ?? "0";
+      const chapterIndex = `${attributes?.chapter}-${id}` ?? "0";
+
+      try {
+        obj[volume][chapter][chapterIndex] = item;
+      } catch (error) {
+        try {
+          obj[volume][chapter] = { [chapterIndex]: item };
+        } catch (error) {
+          obj[volume] = { [chapter]: { [chapterIndex]: item } };
+        }
+      }
+    });
+
+    Object.keys(obj).forEach((key) => {
+      Object.keys(obj[key]).forEach((deep) => {
+        obj[key][deep] = objectLang(obj[key][deep]);
+      });
+    });
+
+    return { data: obj, total: data.total };
   }
 
   static async cover(mangaId?: string, coverId?: string) {
@@ -92,6 +139,20 @@ class MangadexService {
     const res = await axios.get(`${server}/api/mangadex/image/${chapterId}`);
     if (res.status != 200) return;
     const data: ImageResponseMangadex = res.data;
+    return data.data;
+  }
+
+  static async group(groupId?: string) {
+    const res = await axios.get(`${server}/api/mangadex/group/${groupId}`);
+    if (res.status != 200) return;
+    const data: GroupResponseMangadex = res.data;
+    return data.data;
+  }
+
+  static async user(userId?: string) {
+    const res = await axios.get(`${server}/api/mangadex/user/${userId}`);
+    if (res.status != 200) return;
+    const data: UserResponseMangadex = res.data;
     return data.data;
   }
 

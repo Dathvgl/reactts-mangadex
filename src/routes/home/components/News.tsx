@@ -45,6 +45,7 @@ function NewItem(props: { item: MangaMangadex }) {
               to={`/detail/${item.id}`}
               className="line-clamp-2 my-1 font-semibold hover:text-sky-600"
             >
+              <ISO6391 str={item.attributes?.originalLanguage} />{" "}
               {keyDefault("en", item.attributes?.title)}
             </Link>
             {chapters && (

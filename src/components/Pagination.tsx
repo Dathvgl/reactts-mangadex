@@ -7,6 +7,8 @@ type PaginationType = {
 };
 
 function Pagination({ total, onPageChange }: PaginationType) {
+  if (total == 1) return <></>;
+
   return (
     <ReactPaginate
       className="flex gap-4"
