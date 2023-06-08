@@ -30,12 +30,16 @@ export function useMangadexChapter(id?: string, limit: number = 3) {
   }, [id]);
 
   async function init() {
-    const res = await MangadexService.mangaFeed(id, {
-      limit,
-      order: { updatedAt: "desc" },
-    });
+    const res = (await MangadexService.mangaFeed(
+      id,
+      {
+        limit,
+        order: { updatedAt: "desc" },
+      },
+      true
+    )) as ChapterMangadex[];
 
-    setState(() => res?.data);
+    setState(() => res);
   }
 
   return state;

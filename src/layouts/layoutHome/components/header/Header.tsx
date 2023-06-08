@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import SearchLayoutHome from "../Search";
 import HeaderSearch from "./components/Search";
 import HeaderUser from "./components/User";
+import HeaderRandom from "./components/Random";
 
 function HeaderLayoutHome() {
   return (
@@ -28,9 +29,9 @@ function HeaderLayoutHome() {
             <Link to="/" className="hover:text-orange-500">
               <li className="p-2">Home</li>
             </Link>
-            <Link to="/" className="hover:text-orange-500">
-              <li className="p-2">Hot</li>
-            </Link>
+            <div className="hover:text-orange-500 flex items-center">
+              <HeaderRandom />
+            </div>
             <li className="p-2 group/tag">
               <HeaderSearch />
             </li>

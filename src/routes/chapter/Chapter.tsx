@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
+import { AiOutlineZoomIn, AiOutlineZoomOut } from "react-icons/ai";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useNavigate, useParams } from "react-router-dom";
+import useLocalStorage from "~/hooks/LocalStorage";
 import { useListVolume } from "~/layouts/LayoutChapter";
 import MangadexService from "~/models/MangadexService";
 import ChapterButton from "./components/Button";
@@ -9,13 +11,26 @@ import ChapterButton from "./components/Button";
 function ChapterPage() {
   const { mangaId, lang, chapterId, chapter } = useParams();
   const navigate = useNavigate();
+
   const { list } = useListVolume();
+  const { getLocal, setLocal } = useLocalStorage<string>("chapterZoom");
+
   const refTop = useRef<HTMLSelectElement | null>(null);
   const refBot = useRef<HTMLSelectElement | null>(null);
+
   const [state, setState] = useState<string[]>();
   const [keyCode, setKeyCode] = useState("");
+  console.log(getLocal());
+
+  const [chapterZoom, setChapterZoom] = useState(
+    Number.parseInt(getLocal() ?? "100")
+  );
 
   useEffect(() => {
+    if (!getLocal()) {
+      setLocal(chapterZoom.toString());
+    }
+
     function handleKey(event: KeyboardEvent) {
       if (event.key == "ArrowLeft") {
         setKeyCode(() => event.key);
@@ -56,12 +71,33 @@ function ChapterPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function onZoom(num: number) {
+    const result = chapterZoom + 5 * num;
+    if (result <= 0 || result > 100) return;
+    setLocal(result.toString());
+    setChapterZoom(() => result);
+  }
+
   if (state?.length == 0) {
     return <></>;
   }
 
   return (
     <>
+      <div className="fixed bottom-10 right-10 flex gap-2 max-[960px]:hidden z-50">
+        <button
+          className="rounded-full p-2 border border-black drop-shadow-lg center-flex item-hover"
+          onClick={() => onZoom(1)}
+        >
+          <AiOutlineZoomIn size={20} />
+        </button>
+        <button
+          className="rounded-full p-2 border border-black drop-shadow-lg center-flex item-hover"
+          onClick={() => onZoom(-1)}
+        >
+          <AiOutlineZoomOut size={20} />
+        </button>
+      </div>
       <div className="flex flex-col gap-4">
         <div className="flex justify-center item-center gap-2">
           <ChapterButton
@@ -103,12 +139,17 @@ function ChapterPage() {
             <GrFormNextLink size={25} />
           </ChapterButton>
         </div>
-        <div className="flex flex-col items-center">
-          {state?.map((item, index) => (
-            <Fragment key={index}>
-              <LazyLoadImage effect="blur" src={item} alt="Error" />
-            </Fragment>
-          ))}
+        <div className="w-100 flex justify-center">
+          <div
+            style={{ width: `${chapterZoom}%` }}
+            className="flex flex-col items-center"
+          >
+            {state?.map((item, index) => (
+              <Fragment key={index}>
+                <LazyLoadImage effect="blur" src={item} alt="Error" />
+              </Fragment>
+            ))}
+          </div>
         </div>
         <div className="flex justify-center item-center gap-2">
           <ChapterButton

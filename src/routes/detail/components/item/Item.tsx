@@ -26,14 +26,14 @@ function ItemDetail(props: { item: MangaMangadex }) {
   }, [item.id, sort, offset]);
 
   async function init() {
-    const re = await MangadexService.mangaFeed(item.id, {
+    const res = (await MangadexService.mangaFeed(item.id, {
       limit: baseOffset,
       offset,
       order: { volume: sort, chapter: sort },
-    });
+    })) as { total: number; data: FeedType };
 
-    setTotal(() => Math.ceil((re?.total ?? 0) / baseOffset));
-    setState(() => re?.data);
+    setTotal(() => Math.ceil((res?.total ?? 0) / baseOffset));
+    setState(() => res?.data);
   }
 
   function onPageChange(selectedItem: { selected: number }) {
@@ -124,7 +124,7 @@ function ItemAll(props: { id?: string; feed?: FeedType }) {
             <Fragment key={vol}>
               <div>
                 <div className="font-bold">
-                  {volume == "none" ? <>No Volume</> : <>Volume {vol}</>}
+                  {volume == "none" ? <>No Volume</> : <>Volume {volume}</>}
                 </div>
                 {chapterDetail(vol)}
               </div>
@@ -165,20 +165,26 @@ function ItemAll(props: { id?: string; feed?: FeedType }) {
     return (
       <div className="flex flex-col divide-y-2 divide-blue-200">
         {Object.keys(feed[vol][ch]).map((key) => {
-          const { attributes, relationships } = feed[vol][ch][key];
+          const {
+            id: chapterId,
+            attributes,
+            relationships,
+          } = feed[vol][ch][key];
           return (
             <Fragment key={`${vol}|${ch}|${key}`}>
               <div className="item-hover">
-                <div className="flex justify-between items-center px-2 pt-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex justify-between items-center px-2 pt-1 gap-2">
+                  <div className="flex items-center gap-2 flex-1">
                     <AiOutlineRead size={20} />
-                    <Link
-                      className="font-bold"
-                      to={`/chapter/${id}/${attributes?.translatedLanguage}/${id}/${attributes?.chapter}`}
-                    >
-                      <ISO6391 str={attributes?.translatedLanguage} />{" "}
-                      {chapterTitle(attributes?.title, attributes?.chapter)}
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <ISO6391 str={attributes?.translatedLanguage} />
+                      <Link
+                        className="font-bold line-clamp-1"
+                        to={`/chapter/${id}/${attributes?.translatedLanguage}/${chapterId}/${attributes?.chapter}`}
+                      >
+                        {chapterTitle(attributes?.title, attributes?.chapter)}
+                      </Link>
+                    </div>
                   </div>
                   <div className="w-40 flex items-center gap-1">
                     <RxLapTimer size={20} />

@@ -89,7 +89,21 @@ class MangadexService {
     return map;
   }
 
-  static async mangaFeed(mangaId?: string, query?: { [key: string]: unknown }) {
+  static async mangaRandom() {
+    const res = await axios.get(`${server}/api/mangadex/mangaRandom`);
+
+    if (res.status != 200) return;
+    const data: MangaResponseMangadex = res.data;
+
+    if (data.result != "ok") return;
+    return data.data;
+  }
+
+  static async mangaFeed(
+    mangaId?: string,
+    query?: { [key: string]: unknown },
+    list?: boolean
+  ) {
     const res = await axios.get(`${server}/api/mangadex/mangaFeed/${mangaId}`, {
       params: { query: JSON.stringify(query) },
     });
@@ -98,6 +112,7 @@ class MangadexService {
     const data: ChaptersResponseMangadex = res.data;
 
     if (data.result != "ok") return;
+    if (list) return data.data;
     const obj: FeedType = {};
 
     data.data?.forEach((item) => {
