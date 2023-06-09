@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutChapter from "~/layouts/LayoutChapter";
 import LayoutHome from "~/layouts/layoutHome/LayoutHome";
 import { store } from "~/redux/store";
+import { lazyCustom } from "./components/LazyCustom";
 
 import "flag-icons/css/flag-icons.min.css";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -13,15 +14,15 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import "./index.css";
 
-const HomePage = lazy(() => import("~/routes/home/Home"));
-const DetailPage = lazy(() => import("~/routes/detail/Detail"));
-const ChapterPage = lazy(() => import("~/routes/chapter/Chapter"));
-const SearchPage = lazy(() => import("~/routes/search/Search"));
-const SignInPage = lazy(() => import("~/routes/login/SignIn"));
-const SignUpPage = lazy(() => import("~/routes/login/SignUp"));
-const ErrorPage = lazy(() => import("~/routes/Error"));
-const GroupPage = lazy(() => import("~/routes/info/group/Group"));
-const UserPage = lazy(() => import("~/routes/info/user/User"));
+const HomePage = lazyCustom(() => import("~/routes/home/Home"));
+const DetailPage = lazyCustom(() => import("~/routes/detail/Detail"));
+const ChapterPage = lazyCustom(() => import("~/routes/chapter/Chapter"));
+const SearchPage = lazyCustom(() => import("~/routes/search/Search"));
+const SignInPage = lazyCustom(() => import("~/routes/login/SignIn"));
+const SignUpPage = lazyCustom(() => import("~/routes/login/SignUp"));
+const ErrorPage = lazyCustom(() => import("~/routes/Error"));
+const GroupPage = lazyCustom(() => import("~/routes/info/group/Group"));
+const UserPage = lazyCustom(() => import("~/routes/info/user/User"));
 
 // ABCDEFGHIJKLMNOPQRSTUVWXYZ
 function Loading() {

@@ -1,14 +1,14 @@
 import { Fragment } from "react";
+import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
+import remarkGfm from "remark-gfm";
 import CoverSrc from "~/components/CoverSrc";
 import { keyDefault } from "~/globals";
-import { useMangadexCover } from "~/hooks/Mangadex";
 import { MangaMangadex } from "~/types";
 
 function HeaderDetail(props: { item: MangaMangadex }) {
   const { item } = props;
-
-  const image = useMangadexCover(item);
+  console.log(item.attributes?.description?.["en"]);
 
   return (
     <>
@@ -47,9 +47,11 @@ function HeaderDetail(props: { item: MangaMangadex }) {
         ))}
       </div>
       <br />
-      <div className="text-justify text-sm">
-        {item.attributes?.description?.["en"]}
-      </div>
+      <ReactMarkdown
+        className="text-justify text-sm"
+        children={item.attributes?.description?.["en"] ?? ""}
+        remarkPlugins={[remarkGfm]}
+      />
       <br />
     </>
   );

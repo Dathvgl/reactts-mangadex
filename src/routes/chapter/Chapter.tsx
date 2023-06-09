@@ -20,7 +20,6 @@ function ChapterPage() {
 
   const [state, setState] = useState<string[]>();
   const [keyCode, setKeyCode] = useState("");
-  console.log(getLocal());
 
   const [chapterZoom, setChapterZoom] = useState(
     Number.parseInt(getLocal() ?? "100")
