@@ -18,13 +18,17 @@ function ScanlationItem(props: { relationships?: RelationshipMangadex[] }) {
       (item) => item.type == "scanlation_group"
     )?.id;
 
-    const resGroup = await MangadexService.group(groupId);
-    setGroup(() => resGroup);
+    if (groupId) {
+      const resGroup = await MangadexService.group(groupId);
+      setGroup(() => resGroup);
+    }
 
     const userId = relationships?.find((item) => item.type == "user")?.id;
 
-    const resUser = await MangadexService.user(userId);
-    setUser(() => resUser);
+    if (userId) {
+      const resUser = await MangadexService.user(userId);
+      setUser(() => resUser);
+    }
   }
 
   return (

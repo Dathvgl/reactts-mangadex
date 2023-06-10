@@ -29,7 +29,7 @@ function CoverItem(props: Props) {
   const { className, item } = props;
 
   const image = useMangadexCover(item);
-  const [aspect, setAspect] = useState<number | undefined>();
+  const [aspect, setAspect] = useState<number>();
 
   function onLoad(event: SyntheticEvent<HTMLImageElement, Event>) {
     const target = event.target as HTMLImageElement;

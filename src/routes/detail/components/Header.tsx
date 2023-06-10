@@ -8,7 +8,6 @@ import { MangaMangadex } from "~/types";
 
 function HeaderDetail(props: { item: MangaMangadex }) {
   const { item } = props;
-  console.log(item.attributes?.description?.["en"]);
 
   return (
     <>
